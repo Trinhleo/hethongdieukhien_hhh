@@ -58,6 +58,7 @@ module.exports = function (io) {
             socket.emit('deviceNodeData', info);
         });
         function sendData(data) {
+            var myData = data ? "on" : "off";
             appClient.publishDeviceCommand("esp8266", "device01", "control", "txt", data);
         }
         socket.on('fan1', function (data) {
