@@ -1,0 +1,8 @@
+{
+  "org": "8usbvc",
+  "domain": "internetofthings.ibmcloud.com",
+  "type": "esp8266",
+  "id": "device01",
+  "auth-method" : "token",
+  "auth-token" : "khanhtrinh2907"
+}

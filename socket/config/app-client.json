@@ -1,0 +1,8 @@
+ {
+    "org": "8usbvc",
+    "id": "myapp",
+    "auth-key": "a-8usbvc-r9f4xyc9cz",
+    "auth-token": "ZP(AcgR@dJ)A63c)u3",
+    "type": "shared",
+    "host": "tcp://8usbvc.messaging.internetofthings.ibmcloud.com:1883"
+}
