@@ -19,7 +19,6 @@ module.exports = function (io) {
     appClient.connect();
 
     appClient.on("connect", function () {
-        var myData = "offpump2";
         appClient.subscribeToDeviceEvents();
     });
     appClient.on("deviceEvent", function (deviceType, deviceId, eventType, format, payload) {
