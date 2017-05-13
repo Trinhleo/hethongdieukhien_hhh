@@ -26,10 +26,6 @@ module.exports = function (io) {
         console.log("Error : " + err);
     })
 
-    function onDataReceived(eventData, deviceId) {
-        console.log(eventData);
-        eventEmitter.emit('dataChange', { data: eventData, deviceId: deviceId });
-    }
     function clientConnect(socket) {
         socket.rom = apiKey;
         socket.join(apiKey);
