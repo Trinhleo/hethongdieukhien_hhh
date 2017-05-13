@@ -37,7 +37,7 @@ module.exports = function (io) {
 
     function onDataReceived(eventdata, deviceId) {
         console.log(eventdata);
-        eventEmitter.emit('dataChange', {data: eventData, deviceId : deviceId});
+        eventEmitter.emit('dataChange', { data: eventData, deviceId: deviceId });
     }
     function clientConnect(socket) {
         socket.rom = apiKey;
@@ -49,7 +49,12 @@ module.exports = function (io) {
         }
         eventEmitter.on('dataChange', function (data) {
             var info = data;
-            socket.emit('deviceNodeData', info);
+            if (info.deviceId = "device001") {
+                socket.emit('deviceNodeData1', info.eventData);
+            }
+            if (info.deviceId = "device002") {
+                socket.emit('deviceNodeData2', info.eventData);
+            }
         });
         function sendData(data, deviceId) {
             appClient.publishDeviceCommand("esp8266", deviceId, "control", "txt", data);
