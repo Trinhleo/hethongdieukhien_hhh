@@ -48,12 +48,11 @@ module.exports = function (io) {
             }
         }
         eventEmitter.on('dataChange', function (data) {
-            var info = data;
-            if (info.deviceId = "device001") {
-                socket.emit('deviceNodeData1', info.eventData);
+            if (data.deviceId = "device001") {
+                socket.emit('deviceNodeData1', data);
             }
-            if (info.deviceId = "device002") {
-                socket.emit('deviceNodeData2', info.eventData);
+            if (data.deviceId = "device002") {
+                socket.emit('deviceNodeData2', data);
             }
         });
         function sendData(data, deviceId) {
