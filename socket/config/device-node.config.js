@@ -26,8 +26,8 @@ module.exports = function (io) {
         if (payload) {
             var pay = payload.toString('utf8').trim();
             console.log("pay: ", pay);
-            data = pay;
-            onDataReceived();
+
+            onDataReceived(pay, deviceId);
         }
     });
 
@@ -35,14 +35,9 @@ module.exports = function (io) {
         console.log("Error : " + err);
     })
 
-    function onDataReceived() {
-        console.log(data);
-        eventEmitter.emit('dataChange', data);
-        var info = data;
-        function cb(err, res) {
-            console.log(err);
-            console.log(res);
-        }
+    function onDataReceived(eventdata, deviceId) {
+        console.log(eventdata);
+        eventEmitter.emit('dataChange', {data: eventData, deviceId : deviceId});
     }
     function clientConnect(socket) {
         socket.rom = apiKey;
@@ -56,40 +51,48 @@ module.exports = function (io) {
             var info = data;
             socket.emit('deviceNodeData', info);
         });
-        function sendData(data) {
-            appClient.publishDeviceCommand("esp8266", "device01", "control", "txt", data);
+        function sendData(data, deviceId) {
+            appClient.publishDeviceCommand("esp8266", deviceId, "control", "txt", data);
         }
         socket.on('fan1', function (data) {
             var myData = data ? "onfan1" : "offfan1";
-            sendData(myData);
+            sendData(myData, "device01");
         })
         socket.on('fan2', function (data) {
             var myData = data ? "onfan2" : "offfan2";
-            sendData(myData);
+            sendData(myData, "device02");
         })
         socket.on('pumb1', function (data) {
             var myData = data ? "onpump1" : "offpump1";
-            sendData(myData);
+            sendData(myData, "device01");
         })
         socket.on('pumb2', function (data) {
             var myData = data ? "onpump2" : "offpump2";
-            sendData(myData);
+            sendData(myData, "device02");
         })
         socket.on('boiler1', function (data) {
             var myData = data ? "onboiler1" : "offboiler1";
-            sendData(myData);
+            sendData(myData, "device01");
         })
         socket.on('boiler2', function (data) {
             var myData = data ? "onboiler2" : "offboiler2";
-            sendData(myData);
+            sendData(myData, "device02");
         })
-        socket.on('light', function (data) {
-            var myData = data ? "onlight" : "offlight";
-            sendData(myData);
+        socket.on('light1', function (data) {
+            var myData = data ? "onlight1" : "offlight1";
+            sendData(myData, "device01");
         })
-        socket.on('mode', function (data) {
-            var myData = data ? "manual" : "auto";
-            sendData(myData);
+        socket.on('light2', function (data) {
+            var myData = data ? "onlight2" : "offlight2";
+            sendData(myData, "device02");
+        })
+        socket.on('mode1', function (data) {
+            var myData = data ? "manual1" : "auto1";
+            sendData(myData, "device01");
+        })
+        socket.on('mode2', function (data) {
+            var myData = data ? "manual2" : "auto2";
+            sendData(myData, "device02");
         })
         socket.on('disconnect', function onDisconnect() {
             socket.leaveAll()
