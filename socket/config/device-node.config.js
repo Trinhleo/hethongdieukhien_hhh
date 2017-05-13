@@ -9,7 +9,7 @@ var appClient = new iotf.IotfApplication(config);
 var deviceClient = new iotf.IotfDevice(deviceConfig);
 module.exports = function (io) {
     var deviceNode = io.of('/device-node');
-    var data;
+
     deviceNode.on('connection', clientConnect);
     //setting the log level to trace. By default its 'warn'
     appClient.log.setLevel('info');
@@ -20,15 +20,6 @@ module.exports = function (io) {
 
     appClient.on("connect", function () {
         appClient.subscribeToDeviceEvents();
-    });
-    appClient.on("deviceEvent", function (deviceType, deviceId, eventType, format, payload) {
-        var arr = {};
-        if (payload) {
-            var pay = payload.toString('utf8').trim();
-            console.log("pay: ", pay);
-
-            onDataReceived(pay, deviceId);
-        }
     });
 
     appClient.on("error", function (err) {
@@ -42,17 +33,18 @@ module.exports = function (io) {
     function clientConnect(socket) {
         socket.rom = apiKey;
         socket.join(apiKey);
-        function cb(err, res) {
-            if (res) {
-                socket.emit('loadHistorydeviceNodeData', res);
-            }
-        }
-        eventEmitter.on('dataChange', function (data) {
-            if (data.deviceId = "device001") {
-                socket.emit('deviceNodeData1', data);
-            }
-            if (data.deviceId = "device002") {
-                socket.emit('deviceNodeData2', data);
+        // eventEmitter.on('dataChange', function (data) {
+
+        // });
+        appClient.on("deviceEvent", function (deviceType, deviceId, eventType, format, payload) {
+            var arr = {};
+            if (payload) {
+                var pay = payload.toString('utf8').trim();
+                if (deviceId === "device001") {
+                    socket.emit('deviceNodeData1', pay);
+                } else if (deviceId === "device002") {
+                    socket.emit('deviceNodeData2', pay);
+                }
             }
         });
         function sendData(data, deviceId) {
