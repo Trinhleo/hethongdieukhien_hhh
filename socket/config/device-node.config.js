@@ -40,9 +40,9 @@ module.exports = function (io) {
             var arr = {};
             if (payload) {
                 var pay = payload.toString('utf8').trim();
-                if (deviceId === "device001") {
+                if (deviceId === "device01") {
                     socket.emit('deviceNodeData1', pay);
-                } else if (deviceId === "device002") {
+                } else if (deviceId === "device02") {
                     socket.emit('deviceNodeData2', pay);
                 }
             }
