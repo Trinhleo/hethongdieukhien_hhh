@@ -35,8 +35,8 @@ module.exports = function (io) {
         console.log("Error : " + err);
     })
 
-    function onDataReceived(eventdata, deviceId) {
-        console.log(eventdata);
+    function onDataReceived(eventData, deviceId) {
+        console.log(eventData);
         eventEmitter.emit('dataChange', { data: eventData, deviceId: deviceId });
     }
     function clientConnect(socket) {
