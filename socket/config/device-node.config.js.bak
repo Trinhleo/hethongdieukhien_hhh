@@ -7,69 +7,46 @@ var deviceConfig = require("./device.json");
 var apiKey = config["auth-key"];
 var appClient = new iotf.IotfApplication(config);
 var deviceClient = new iotf.IotfDevice(deviceConfig);
-var mqtt = require('mqtt'), url = require('url');
-// Parse 
-var mqtt_url = url.parse(process.env.CLOUDMQTT_URL || 'mqtt://m13.cloudmqtt.com:13492');
-var auth = (mqtt_url.auth || ':').split(':');
-var url = "mqtt://m13.cloudmqtt.com";
+var mqtt = require('mqtt');
+var url = require('url');
 module.exports = function (io) {
     var deviceNode = io.of('/device-node');
 
     deviceNode.on('connection', clientConnect);
     //setting the log level to trace. By default its 'warn'
-    // appClient.log.setLevel('info');
-    // appClient.log.setLevel('debug');
-    // appClient.log.setLevel('error');
-    // appClient.host = config.host;
-    // appClient.connect();
+    appClient.log.setLevel('info');
+    appClient.log.setLevel('debug');
+    appClient.log.setLevel('error');
+    appClient.host = config.host;
+    appClient.connect();
 
-    // appClient.on("connect", function () {
-    //     appClient.subscribeToDeviceEvents();
-    // });
+    appClient.on("connect", function () {
+        appClient.subscribeToDeviceEvents();
+    });
 
-    // appClient.on("error", function (err) {
-    //     console.log("Error : " + err);
-    // })
-    var options = {
-        port: "13492",
-        clientId: 'mqttjs_' + Math.random().toString(16).substr(2, 8),
-        username: "rauzdzhf",
-        password: "VXloiMpGvtxe",
-    };
-
-    var client = mqtt.connect(url, options);
-
+    appClient.on("error", function (err) {
+        console.log("Error : " + err);
+    })
 
     function clientConnect(socket) {
         socket.rom = apiKey;
         socket.join(apiKey);
-        client.on('connect', function () { // When connected
+        // eventEmitter.on('dataChange', function (data) {
 
-            // subscribe to a topic
-            client.subscribe('event1', function () {
-                // when a message arrives, do something with it
-                client.on('message', function (topic, message, packet) {
-                    var pay = message.toString('utf8').trim();
+        // });
+        appClient.on("deviceEvent", function (deviceType, deviceId, eventType, format, payload) {
+            var arr = {};
+            if (payload) {
+                var pay = payload.toString('utf8').trim();
+                if (deviceId === "device01") {
                     socket.emit('deviceNodeData1', pay);
-                });
-            });
-            client.subscribe('event2', function () {
-                // when a message arrives, do something with it
-                client.on('message', function (topic, message, packet) {
-                    var pay = message.toString('utf8').trim();
+                } else if (deviceId === "device02") {
                     socket.emit('deviceNodeData2', pay);
-                });
-            });
-
-            // publish a message to a topic
-
+                }
+            }
         });
-        function sendData(data, device) {
-            // appClient.publishDeviceCommand("esp8266", topic, "control", "txt", data);
-            var topic = device == "device01" ? "control1" : "control2";
-            client.publish(topic, data, function () {
-                console.log("Message is published");
-            });
+        function sendData(data, deviceId) {
+            appClient.publishDeviceCommand("esp8266", deviceId, "control", "txt", data);
         }
         socket.on('fan1', function (data) {
             var myData = data ? "of1" : "ff1";
